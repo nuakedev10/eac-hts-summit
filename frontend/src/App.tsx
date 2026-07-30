@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
+import { ArrowRight, CalendarDays } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { partnerGroups, partnerMailto, sideEvents } from './data/siteContent';
 
 type NavItem = {
   label: string;
-  href: string;
+  to: string;
 };
 
 type Track = {
@@ -23,19 +26,14 @@ type DemoCard = {
   className?: string;
 };
 
-type PartnerGroup = {
-  title: string;
-  items: string[];
-};
-
 const navItems: NavItem[] = [
-  { label: 'Home', href: 'index.html' },
-  { label: 'About', href: 'about.html' },
-  { label: 'Programme', href: 'programme.html' },
-  { label: 'Demo Village', href: 'demo-village.html' },
-  { label: 'Startup & Awards', href: 'startup-awards.html' },
-  { label: 'Side Events', href: 'side-events.html' },
-  { label: 'Partners', href: 'partners.html' },
+  { label: 'Home', to: '/' },
+  { label: 'About', to: '/#about-preview' },
+  { label: 'Programme', to: '/#tracks' },
+  { label: 'Demo Village', to: '/#demo-village' },
+  { label: 'Startup & Awards', to: '/startup-awards' },
+  { label: 'Side Events', to: '/side-events' },
+  { label: 'Partners', to: '/partners' },
 ];
 
 const tracks: Track[] = [
@@ -177,80 +175,31 @@ const demoCards: DemoCard[] = [
   },
 ];
 
-const partnerGroups: PartnerGroup[] = [
-  {
-    title: 'IEEE Partners',
-    items: ['IEEE HTB', 'IEEE Foundation', 'IEEE SIGHT', 'IEEE Smart Village', 'IEEE Region 8', 'IEEE Africa Council'],
-  },
-  {
-    title: 'UN Agencies',
-    items: ['UNDP', 'UNICEF', 'ITU', 'WHO', 'FAO', 'UNHCR', 'WFP'],
-  },
-  {
-    title: 'Industry & Development',
-    items: ['Microsoft', 'Google', 'Ericsson', 'Nokia', 'MTN', 'Safaricom', 'Davis & Shirtliff', 'GSMA M4D', 'World Bank', 'AfDB', 'GIZ', 'Mastercard Foundation'],
-  },
-];
-
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [countdown, setCountdown] = useState({ days: '--', hours: '--', mins: '--', secs: '--' });
-  const [participantType, setParticipantType] = useState('local');
 
   useEffect(() => {
-    const toggle = document.querySelector<HTMLElement>('.nav-toggle');
-    const navLinks = document.querySelector<HTMLElement>('.nav-links');
-
-    if (toggle && navLinks) {
-      const handleToggle = () => {
-        const nextOpen = !isMenuOpen;
-        setIsMenuOpen(nextOpen);
-        toggle.classList.toggle('active', nextOpen);
-        navLinks.classList.toggle('open', nextOpen);
-        document.body.style.overflow = nextOpen ? 'hidden' : '';
-      };
-
-      const handleLinkClick = () => {
-        setIsMenuOpen(false);
-        toggle.classList.remove('active');
-        navLinks.classList.remove('open');
-        document.body.style.overflow = '';
-      };
-
-      toggle.addEventListener('click', handleToggle);
-      navLinks.querySelectorAll('a').forEach((link) => link.addEventListener('click', handleLinkClick));
-
-      return () => {
-        toggle.removeEventListener('click', handleToggle);
-        navLinks.querySelectorAll('a').forEach((link) => link.removeEventListener('click', handleLinkClick));
-      };
-    }
+    document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsMenuOpen(false);
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = '';
+    };
   }, [isMenuOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
-      const nextScrolled = window.scrollY > 50;
-      setIsScrolled(nextScrolled);
-      const nav = document.querySelector<HTMLElement>('.nav');
-      if (nav) {
-        nav.classList.toggle('scrolled', nextScrolled);
-      }
+      setIsScrolled(window.scrollY > 50);
     };
 
     handleScroll();
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    document.querySelectorAll<HTMLAnchorElement>('.nav-links a').forEach((anchor) => {
-      const href = anchor.getAttribute('href');
-      if (href === currentPage || (currentPage === '' && href === 'index.html')) {
-        anchor.classList.add('active');
-      }
-    });
   }, []);
 
   useEffect(() => {
@@ -334,28 +283,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const participantTypeField = document.getElementById('participant-type') as HTMLSelectElement | null;
-    const payLocal = document.getElementById('payment-local');
-    const payIntl = document.getElementById('payment-intl');
-
-    if (participantTypeField) {
-      const handleChange = (event: Event) => {
-        const nextValue = (event.target as HTMLSelectElement).value;
-        setParticipantType(nextValue);
-        if (payLocal) {
-          payLocal.classList.toggle('active', nextValue === 'local');
-        }
-        if (payIntl) {
-          payIntl.classList.toggle('active', nextValue === 'international');
-        }
-      };
-
-      participantTypeField.addEventListener('change', handleChange);
-      return () => participantTypeField.removeEventListener('change', handleChange);
-    }
-  }, []);
-
-  useEffect(() => {
     const links = document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]');
     const handleAnchorClick = (event: MouseEvent) => {
       const target = event.currentTarget as HTMLAnchorElement;
@@ -376,7 +303,7 @@ function App() {
     <>
       <nav className={`nav${isScrolled ? ' scrolled' : ''}`} id="navbar">
         <div className="nav-inner">
-          <a href="index.html" className="nav-logo">
+          <Link to="/" className="nav-logo">
             <div className="nav-logo-icon">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" />
@@ -388,25 +315,19 @@ function App() {
               EA-HTS 2027
               <span>IEEE East Africa</span>
             </div>
-          </a>
+          </Link>
 
           <ul className={`nav-links${isMenuOpen ? ' open' : ''}`} id="nav-links">
-            {navItems.map((item) => {
-              const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-              const isActive = item.href === currentPage || (currentPage === '' && item.href === 'index.html');
-              return (
-                <li key={item.href}>
-                  <a href={item.href} className={isActive ? 'active' : ''}>
-                    {item.label}
-                  </a>
-                </li>
-              );
-            })}
+            {navItems.map((item) => (
+              <li key={item.to}>
+                <Link to={item.to} className={item.to === '/' ? 'active' : undefined} onClick={() => setIsMenuOpen(false)}>{item.label}</Link>
+              </li>
+            ))}
           </ul>
 
           <div className="nav-cta">
-            <a href="register.html" className="btn btn-gold">
-              Register
+            <a href="mailto:ieeeahts27@gmail.com?subject=EA-HTS%202027%20Registration%20Updates" className="btn btn-gold">
+              Registration updates
               <svg className="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M5 12h14" />
                 <path d="m12 5 7 7-7 7" />
@@ -414,7 +335,7 @@ function App() {
             </a>
           </div>
 
-          <button className={`nav-toggle${isMenuOpen ? ' active' : ''}`} id="nav-toggle" aria-label="Toggle menu" type="button">
+          <button className={`nav-toggle${isMenuOpen ? ' active' : ''}`} id="nav-toggle" aria-label={isMenuOpen ? 'Close menu' : 'Open menu'} aria-expanded={isMenuOpen} aria-controls="nav-links" type="button" onClick={() => setIsMenuOpen((open) => !open)}>
             <span />
             <span />
             <span />
@@ -476,14 +397,14 @@ function App() {
             </div>
 
             <div className="hero-actions">
-              <a href="register.html" className="btn btn-gold">
-                Register Now
+              <a href="mailto:ieeeahts27@gmail.com?subject=EA-HTS%202027%20Registration%20Updates" className="btn btn-gold">
+                Registration updates
                 <svg className="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M5 12h14" />
                   <path d="m12 5 7 7-7 7" />
                 </svg>
               </a>
-              <a href="programme.html" className="btn btn-secondary">
+              <a href="#tracks" className="btn btn-secondary">
                 Explore Programme
               </a>
             </div>
@@ -563,7 +484,7 @@ function App() {
                   <line x1="8" x2="16" y1="12" y2="12" />
                 </svg>
                 <div>
-                  <div className="hero-stat-number">10</div>
+                  <div className="hero-stat-number">9</div>
                   <div className="hero-stat-text">Award Categories</div>
                 </div>
               </div>
@@ -649,7 +570,7 @@ function App() {
                   <p>Convene stakeholders across sectors to accelerate the development, adoption, and scaling of technology solutions for humanitarian and sustainable development challenges.</p>
                 </div>
               </div>
-              <a href="about.html" className="btn btn-outline" style={{ marginTop: '1.5rem' }}>
+              <a href="#about-preview" className="btn btn-outline" style={{ marginTop: '1.5rem' }}>
                 Learn more about EA-HTS
                 <svg className="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M5 12h14" />
@@ -687,7 +608,7 @@ function App() {
           </div>
 
           <div style={{ textAlign: 'center', marginTop: '2.5rem' }} className="reveal">
-            <a href="programme.html" className="btn btn-primary">
+            <a href="#tracks" className="btn btn-primary">
               View full programme
               <svg className="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M5 12h14" />
@@ -729,7 +650,7 @@ function App() {
           </div>
 
           <div style={{ textAlign: 'center', marginTop: '2.5rem' }} className="reveal">
-            <a href="demo-village.html" className="btn btn-secondary" style={{ borderColor: 'var(--gold)', color: 'var(--gold)' }}>
+            <a href="#demo-village" className="btn btn-secondary" style={{ borderColor: 'var(--gold)', color: 'var(--gold)' }}>
               Explore the Demo Village
               <svg className="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M5 12h14" />
@@ -763,6 +684,25 @@ function App() {
         </div>
       </section>
 
+      <section className="home-feature-preview" id="side-events-preview">
+        <div className="home-feature-preview__heading reveal">
+          <div>
+            <span className="home-feature-preview__eyebrow"><CalendarDays aria-hidden="true" /> Side Events</span>
+            <h2>Eight rooms for the conversations behind change.</h2>
+          </div>
+          <p>Leadership, policy, research, investment, inclusion, and opportunity come together around the main summit programme.</p>
+        </div>
+        <div className="home-event-strip reveal">
+          {sideEvents.slice(0, 4).map((event) => (
+            <article key={event.title}>
+              <span>{event.number} / {event.category}</span>
+              <h3>{event.title}</h3>
+            </article>
+          ))}
+        </div>
+        <Link className="home-feature-preview__link" to="/side-events">Explore all side events <ArrowRight aria-hidden="true" /></Link>
+      </section>
+
       <section className="section section-alt" id="partners-preview">
         <div className="container">
           <div className="section-header centered reveal">
@@ -775,9 +715,9 @@ function App() {
             <div key={group.title} className="partners-section-group reveal">
               <h3>{group.title}</h3>
               <div className="partners-grid">
-                {group.items.map((item) => (
-                  <div key={item} className="partner-card">
-                    {item}
+                {group.partners.slice(0, 5).map((partner) => (
+                  <div key={partner.name} className="partner-card">
+                    {partner.name}
                   </div>
                 ))}
               </div>
@@ -785,10 +725,8 @@ function App() {
           ))}
 
           <p style={{ textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-light)', marginTop: '1.5rem' }} className="reveal">
-            These are prospective partners drawn from the Summit concept note and comparable IEEE programmes. Engagement is in progress.
-            <a href="mailto:ieeeahts27@gmail.com?subject=Partnership%20Inquiry" style={{ color: 'var(--primary)' }}>
-              Interested in partnering? Get in touch →
-            </a>
+            Prospective partners identified for engagement; participation is not yet confirmed.{' '}
+            <Link to="/partners" style={{ color: 'var(--primary)' }}>Explore partnership opportunities →</Link>
           </p>
         </div>
       </section>
@@ -802,14 +740,14 @@ function App() {
             <h2>We&apos;ll see you in Kigali.</h2>
             <p>Join 350+ engineers, researchers, humanitarian actors, and innovators at East Africa&apos;s premier humanitarian technology event.</p>
             <div className="cta-actions">
-              <a href="register.html" className="btn btn-gold">
-                Register Now
+              <a href="mailto:ieeeahts27@gmail.com?subject=EA-HTS%202027%20Registration%20Updates" className="btn btn-gold">
+                Registration updates
                 <svg className="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M5 12h14" />
                   <path d="m12 5 7 7-7 7" />
                 </svg>
               </a>
-              <a href="mailto:ieeeahts27@gmail.com?subject=Partnership%20Inquiry" className="btn btn-secondary">
+              <a href={partnerMailto} className="btn btn-secondary">
                 Partner with us
               </a>
             </div>
@@ -821,7 +759,7 @@ function App() {
         <div className="container">
           <div className="footer-grid">
             <div className="footer-brand">
-              <a href="index.html" className="nav-logo" style={{ marginBottom: '0.5rem' }}>
+              <Link to="/" className="nav-logo" style={{ marginBottom: '0.5rem' }}>
                 <div className="nav-logo-icon">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10" />
@@ -833,19 +771,19 @@ function App() {
                   EA-HTS 2027
                   <span>IEEE East Africa</span>
                 </div>
-              </a>
+              </Link>
               <p>The IEEE East African Humanitarian Technology Summit — a regional flagship platform uniting humanitarian, development, engineering, academic, and innovation communities across East Africa.</p>
               <div className="footer-social">
-                <a href="#" aria-label="LinkedIn">
+                <a aria-disabled="true" aria-label="LinkedIn link unavailable">
                   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
                 </a>
-                <a href="#" aria-label="X (Twitter)">
+                <a aria-disabled="true" aria-label="X link unavailable">
                   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" /></svg>
                 </a>
-                <a href="#" aria-label="Instagram">
+                <a aria-disabled="true" aria-label="Instagram link unavailable">
                   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069ZM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0Zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324ZM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881Z" /></svg>
                 </a>
-                <a href="#" aria-label="Facebook">
+                <a aria-disabled="true" aria-label="Facebook link unavailable">
                   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073Z" /></svg>
                 </a>
               </div>
@@ -854,20 +792,19 @@ function App() {
             <div>
               <h4>Explore</h4>
               <ul className="footer-links">
-                <li><a href="about.html">About</a></li>
-                <li><a href="programme.html">Programme</a></li>
-                <li><a href="demo-village.html">Demo Village</a></li>
-                <li><a href="startup-awards.html">Startup Challenge</a></li>
-                <li><a href="startup-awards.html#awards">Awards</a></li>
-                <li><a href="partners.html">Partners</a></li>
+                <li><Link to="/#about-preview">About</Link></li>
+                <li><Link to="/#tracks">Programme</Link></li>
+                <li><Link to="/#demo-village">Demo Village</Link></li>
+                <li><Link to="/side-events">Side Events</Link></li>
+                <li><Link to="/partners">Partners</Link></li>
               </ul>
             </div>
 
             <div>
               <h4>Get Involved</h4>
               <ul className="footer-links">
-                <li><a href="register.html">Register to attend</a></li>
-                <li><a href="mailto:ieeeahts27@gmail.com?subject=Partnership%20Inquiry">Become a partner</a></li>
+                <li><a href="mailto:ieeeahts27@gmail.com?subject=EA-HTS%202027%20Registration%20Updates">Registration updates</a></li>
+                <li><a href={partnerMailto}>Become a partner</a></li>
                 <li><a href="mailto:ieeeahts27@gmail.com?subject=Startup%20Challenge%20Application">Enter the Startup Challenge</a></li>
                 <li><a href="mailto:ieeeahts27@gmail.com?subject=Speaker%20Inquiry">Speak at the Summit</a></li>
               </ul>
