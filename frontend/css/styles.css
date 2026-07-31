@@ -1136,6 +1136,7 @@ h4 { font-size: 1.125rem; }
 }
 .footer-social a:hover { background: var(--gold); color: var(--navy); }
 .footer-social svg { width: 18px; height: 18px; }
+.footer-social a[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
 
 .footer-bottom {
   border-top: 1px solid rgba(255,255,255,0.08);
