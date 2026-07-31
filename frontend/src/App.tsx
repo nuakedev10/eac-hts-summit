@@ -30,7 +30,7 @@ const navItems: NavItem[] = [
   { label: 'Home', to: '/' },
   { label: 'About', to: '/#about-preview' },
   { label: 'Programme', to: '/#tracks' },
-  { label: 'Demo Village', to: '/#demo-village' },
+  { label: 'Demo Village', to: '/demo-village' },
   { label: 'Startup & Awards', to: '/startup-awards' },
   { label: 'Side Events', to: '/side-events' },
   { label: 'Partners', to: '/partners' },
@@ -326,13 +326,13 @@ function App() {
           </ul>
 
           <div className="nav-cta">
-            <a href="mailto:ieeeahts27@gmail.com?subject=EA-HTS%202027%20Registration%20Updates" className="btn btn-gold">
-              Registration updates
+            <Link to="/register" className="btn btn-gold">
+              Register Now
               <svg className="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M5 12h14" />
                 <path d="m12 5 7 7-7 7" />
               </svg>
-            </a>
+            </Link>
           </div>
 
           <button className={`nav-toggle${isMenuOpen ? ' active' : ''}`} id="nav-toggle" aria-label={isMenuOpen ? 'Close menu' : 'Open menu'} aria-expanded={isMenuOpen} aria-controls="nav-links" type="button" onClick={() => setIsMenuOpen((open) => !open)}>
@@ -397,13 +397,13 @@ function App() {
             </div>
 
             <div className="hero-actions">
-              <a href="mailto:ieeeahts27@gmail.com?subject=EA-HTS%202027%20Registration%20Updates" className="btn btn-gold">
-                Registration updates
+              <Link to="/register" className="btn btn-gold">
+                Register Now
                 <svg className="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M5 12h14" />
                   <path d="m12 5 7 7-7 7" />
                 </svg>
-              </a>
+              </Link>
               <a href="#tracks" className="btn btn-secondary">
                 Explore Programme
               </a>
@@ -650,13 +650,13 @@ function App() {
           </div>
 
           <div style={{ textAlign: 'center', marginTop: '2.5rem' }} className="reveal">
-            <a href="#demo-village" className="btn btn-secondary" style={{ borderColor: 'var(--gold)', color: 'var(--gold)' }}>
+            <Link to="/demo-village" className="btn btn-secondary" style={{ borderColor: 'var(--gold)', color: 'var(--gold)' }}>
               Explore the Demo Village
               <svg className="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M5 12h14" />
                 <path d="m12 5 7 7-7 7" />
               </svg>
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -740,13 +740,13 @@ function App() {
             <h2>We&apos;ll see you in Kigali.</h2>
             <p>Join 350+ engineers, researchers, humanitarian actors, and innovators at East Africa&apos;s premier humanitarian technology event.</p>
             <div className="cta-actions">
-              <a href="mailto:ieeeahts27@gmail.com?subject=EA-HTS%202027%20Registration%20Updates" className="btn btn-gold">
-                Registration updates
+              <Link to="/register" className="btn btn-gold">
+                Register Now
                 <svg className="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M5 12h14" />
                   <path d="m12 5 7 7-7 7" />
                 </svg>
-              </a>
+              </Link>
               <a href={partnerMailto} className="btn btn-secondary">
                 Partner with us
               </a>
@@ -794,7 +794,7 @@ function App() {
               <ul className="footer-links">
                 <li><Link to="/#about-preview">About</Link></li>
                 <li><Link to="/#tracks">Programme</Link></li>
-                <li><Link to="/#demo-village">Demo Village</Link></li>
+                <li><Link to="/demo-village">Demo Village</Link></li>
                 <li><Link to="/side-events">Side Events</Link></li>
                 <li><Link to="/partners">Partners</Link></li>
               </ul>
@@ -803,9 +803,9 @@ function App() {
             <div>
               <h4>Get Involved</h4>
               <ul className="footer-links">
-                <li><a href="mailto:ieeeahts27@gmail.com?subject=EA-HTS%202027%20Registration%20Updates">Registration updates</a></li>
+                <li><Link to="/register">Register Now</Link></li>
                 <li><a href={partnerMailto}>Become a partner</a></li>
-                <li><a href="mailto:ieeeahts27@gmail.com?subject=Startup%20Challenge%20Application">Enter the Startup Challenge</a></li>
+                <li><Link to="/startup-awards">Enter the Startup Challenge</Link></li>
                 <li><a href="mailto:ieeeahts27@gmail.com?subject=Speaker%20Inquiry">Speak at the Summit</a></li>
               </ul>
             </div>

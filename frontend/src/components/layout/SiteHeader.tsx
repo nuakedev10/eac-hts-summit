@@ -6,7 +6,7 @@ const navItems = [
   { label: 'Home', to: '/' },
   { label: 'About', to: '/#about-preview' },
   { label: 'Programme', to: '/#tracks' },
-  { label: 'Demo Village', to: '/#demo-village' },
+  { label: 'Demo Village', to: '/demo-village' },
   { label: 'Startup & Awards', to: '/startup-awards' },
   { label: 'Side Events', to: '/side-events' },
   { label: 'Partners', to: '/partners' },
@@ -27,7 +27,12 @@ export function SiteHeader() {
   useEffect(() => {
     document.body.style.overflow = '';
     if (location.hash) {
-      window.requestAnimationFrame(() => document.querySelector(location.hash)?.scrollIntoView());
+      window.requestAnimationFrame(() => {
+        const element = document.querySelector(location.hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
     } else {
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
@@ -65,14 +70,14 @@ export function SiteHeader() {
               {item.label}
             </NavLink>
           ))}
-          <a className="site-nav__mobile-cta" href="mailto:ieeeahts27@gmail.com?subject=EA-HTS%202027%20Registration%20Updates">
-            Registration updates <ArrowRight aria-hidden="true" />
-          </a>
+          <Link className="site-nav__mobile-cta" to="/register" onClick={() => setIsOpen(false)}>
+            Register Now <ArrowRight aria-hidden="true" />
+          </Link>
         </nav>
 
-        <a className="site-header__cta" href="mailto:ieeeahts27@gmail.com?subject=EA-HTS%202027%20Registration%20Updates">
-          Registration updates <ArrowRight aria-hidden="true" />
-        </a>
+        <Link className="site-header__cta" to="/register">
+          Register Now <ArrowRight aria-hidden="true" />
+        </Link>
         <button
           className="site-header__menu"
           type="button"

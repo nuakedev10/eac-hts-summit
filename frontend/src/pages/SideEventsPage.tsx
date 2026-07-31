@@ -18,7 +18,7 @@ export function SideEventsPage() {
           <p>Eight focused forums bring leadership, policy, research, investment, inclusion, and talent into the same regional conversation.</p>
           <div className="feature-actions">
             <a className="feature-button feature-button--gold" href={sideEventMailto}>Propose a side event <Mail aria-hidden="true" /></a>
-            <a className="feature-button feature-button--ghost" href="mailto:ieeeahts27@gmail.com?subject=EA-HTS%202027%20Registration%20Updates">Registration updates <ArrowRight aria-hidden="true" /></a>
+            <Link className="feature-button feature-button--ghost" to="/register">Register Now <ArrowRight aria-hidden="true" /></Link>
           </div>
         </div>
         <div className="feature-hero__index" aria-label="Side event overview">

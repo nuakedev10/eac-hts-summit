@@ -16,13 +16,13 @@ export function SiteFooter() {
           <h2>Explore</h2>
           <Link to="/#about-preview">About</Link>
           <Link to="/#tracks">Programme</Link>
-          <Link to="/#demo-village">Demo Village</Link>
-          <Link to="/startup-awards">Startup Challenge</Link>
+          <Link to="/demo-village">Demo Village</Link>
+          <Link to="/startup-awards">Startup & Awards</Link>
           <Link to="/partners">Partners</Link>
         </nav>
         <nav className="site-footer__column" aria-label="Get involved navigation">
           <h2>Get Involved</h2>
-          <a href="mailto:ieeeahts27@gmail.com?subject=EA-HTS%202027%20Registration%20Updates">Registration updates</a>
+          <Link to="/register">Register Now</Link>
           <a href="mailto:ieeeahts27@gmail.com?subject=EA-HTS%202027%20Partnership%20Inquiry">Partner with us</a>
           <a href="mailto:ieeeahts27@gmail.com?subject=EA-HTS%202027%20Speaker%20Inquiry">Speak at the Summit</a>
         </nav>
